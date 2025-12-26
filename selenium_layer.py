@@ -1,12 +1,11 @@
-import platform,time, os
+import platform, time, os
 from faker import Faker
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options as OptionsChrome
-from selenium.webdriver.ie.options import Options as OptionsIE
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver import ActionChains
 from selenium.webdriver.support.ui import Select
@@ -25,60 +24,59 @@ class SeleniumLayer:
         self.dir_out = dir_out
         log = log
 
-    def iniciar_driver_chrome(self):        
+    def iniciar_driver_chrome(self):
         ###################### CHROME - DRIVER ######################
         # Path Chromedriver
-        if (platform.system().lower()=="linux"): chrome_path='/usr/bin/chromedriver'
-        elif (platform.system().lower()=="windows"): chrome_path=os.path.join(self.dir_path,"chromedriver.exe")
+        if platform.system().lower() == "linux":
+            chrome_path = '/usr/bin/chromedriver'
+        elif platform.system().lower() == "windows":
+            chrome_path = os.path.join(self.dir_path, "chromedriver.exe")
+        else:
+            chrome_path = None  # Let Selenium find it automatically
 
-        # Capabillities - Options
-        caps_chrome = DesiredCapabilities().CHROME
-        caps_chrome["pageLoadStrategy"] = "normal"  
-
+        # Chrome Options (Selenium 4 API)
         opts_chrome = OptionsChrome()
-        # ua = UserAgent()
-        # userAgent = ua.random
-        # self.log.debug(userAgent)
-        # opts_chrome.add_argument(f'user-agent={userAgent}')
-        opts_chrome.add_argument('user-agent='+fake.chrome())
-        opts_chrome.add_argument("disable-infobars")
+        opts_chrome.page_load_strategy = 'normal'
+        opts_chrome.add_argument('user-agent=' + fake.chrome())
+        opts_chrome.add_argument("--disable-infobars")
         opts_chrome.add_argument("--disable-extensions")
-        opts_chrome.add_argument("no-sandbox")
-        # opts_chrome.add_argument("headless")
-        opts_chrome.add_argument("disable-gpu")
-        opts_chrome.add_argument("lang=es")
-        opts_chrome.add_argument("test-type")
-        opts_chrome.add_argument("force-renderer-accessibility")
-        opts_chrome.add_argument("disable-web-security")
-        opts_chrome.add_argument("disable-extensions")
-        opts_chrome.add_argument("allow-insecure-localhost")
-        opts_chrome.add_argument("ignore-ssl-errors=yes")
-        opts_chrome.add_argument("ignore-certificate-errors")
+        opts_chrome.add_argument("--no-sandbox")
+        opts_chrome.add_argument("--disable-gpu")
+        opts_chrome.add_argument("--lang=es")
+        opts_chrome.add_argument("--disable-web-security")
+        opts_chrome.add_argument("--allow-insecure-localhost")
+        opts_chrome.add_argument("--ignore-ssl-errors=yes")
+        opts_chrome.add_argument("--ignore-certificate-errors")
         opts_chrome.add_argument("--log-level=3")
-        opts_chrome.add_argument("safebrowsing-disable-download-protection")
-        prefs = {"download.default_directory" : self.dir_in}
-        opts_chrome.add_experimental_option("prefs",prefs)
+        opts_chrome.add_argument("--disable-dev-shm-usage")
+        # Uncomment for headless mode:
+        # opts_chrome.add_argument("--headless=new")
+
+        prefs = {"download.default_directory": self.dir_in}
+        opts_chrome.add_experimental_option("prefs", prefs)
         #####################################################
 
         self.log.debug("############### Inicio Cargar Chrome ###############")
-        inicio=time.time()
-        self.log.debug ("Chrome Caps: ")
-        self.log.debug (caps_chrome)
-        self.log.debug ("Chrome Path: "+ chrome_path)
-        self.log.debug ("Chrome Opts: ")
-        self.log.debug (opts_chrome)
+        inicio = time.time()
+        self.log.debug("Chrome Path: " + str(chrome_path))
+        self.log.debug("Chrome Opts configured")
         try:
-            self.log.debug ("Iniciando WebDriver")
-            self.driver = webdriver.Chrome(desired_capabilities=caps_chrome,executable_path=chrome_path, chrome_options=opts_chrome)
-            self.driver.set_page_load_timeout(TIME_OUT_WEB*2)
-            #self.driver.maximize_window()
-            
-            
+            self.log.debug("Iniciando WebDriver")
+            # Selenium 4 API: use Service and options parameters
+            if chrome_path and os.path.exists(chrome_path):
+                service = ChromeService(executable_path=chrome_path)
+                self.driver = webdriver.Chrome(service=service, options=opts_chrome)
+            else:
+                # Let Selenium Manager find the driver automatically
+                self.driver = webdriver.Chrome(options=opts_chrome)
+
+            self.driver.set_page_load_timeout(TIME_OUT_WEB * 2)
+
         except Exception as e:
             self.log.error("Ocurrio un error con el ChromeDriver")
             raise Exception(e)
-        
-        self.log.debug("## Tiempo transcurrido: " + str(time.time()-inicio))
+
+        self.log.debug("## Tiempo transcurrido: " + str(time.time() - inicio))
         self.log.debug("############### Fin Cargar Chrome ###############")
         
 

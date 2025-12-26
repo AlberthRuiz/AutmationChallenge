@@ -1,42 +1,81 @@
-# Automation-Challenge
+# Automation Challenge
 
-# Task 1 - UI Automated test using Selenium WebDriver
-Create automated tests using the following test case:
+## Task 1 - UI Automated Test using Selenium WebDriver
+Automated tests for user registration on a practice website.
 
-Requirements:
-+ Install Python 3.8x or lastest version. you can download it from https://www.python.org/downloads/
-+ Use the package manager pip to install packages.
-```bash
-pip install Faker
-```
-```bash
-pip install selenium
-```
-```bash
-pip install pandas 
-```
-```bash
-pip install requests 
-```
-```bash
-pip install openpyxl 
-```
-```bash
-pip install logging
-```
-* ChromeDriver here the repositorey driver with Chrome version 94.
+## Task 2 - API Automated Test using Requests
+API testing for country data endpoints.
 
-Preconditions:
-* Generated customer with all customer data, please run 
+---
+
+## Requirements
+
+- Python 3.8 or later ([Download](https://www.python.org/downloads/))
+- Google Chrome browser installed
+- ChromeDriver (Selenium 4 can auto-download it via Selenium Manager)
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd AutmationChallenge
+```
+
+2. Create and activate a virtual environment (recommended):
+```bash
+python -m venv venv
+source venv/bin/activate  # Linux/macOS
+# or
+venv\Scripts\activate  # Windows
+```
+
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+## Project Structure
+
+```
+AutmationChallenge/
+├── random_data.py      # Generates fake customer data for testing
+├── selenium_layer.py   # Selenium WebDriver abstraction layer
+├── task_1.py           # UI automation: user registration
+├── task_2.py           # API automation: country data endpoints
+├── util.py             # Utility functions (logging, file operations)
+├── requirements.txt    # Python dependencies
+├── input/              # Input files (auto-created)
+├── output/             # Output files (auto-created)
+└── log/                # Log files (auto-created)
+```
+
+## Usage
+
+### Generate Test Data
+Before running Task 1, generate mock customer data:
 ```bash
 python random_data.py
 ```
-Files:
-* random_data.py -> Make fake data customers to test website.
-* selenium_layer.py -> configure actions on web pages using chromedriver.
-* task_1.py -> Fill information and register data on website.
+This creates `input/mockup.xlsx` with test customer data.
 
-# Task 2 - API Automated test using requests 
-Given the following web-services:
-* https://api.countrylayer.com/v2/all
-* https://api.countrylayer.com/v2/alpha/{code}
+### Run Task 1 - UI Automation
+```bash
+python task_1.py
+```
+
+### Run Task 2 - API Testing
+```bash
+python task_2.py
+```
+
+## API Endpoints (Task 2)
+
+- `https://api.countrylayer.com/v2/all` - Get all countries
+- `https://api.countrylayer.com/v2/alpha/{code}` - Get country by code
+
+## Notes
+
+- Selenium 4 uses Selenium Manager to automatically download the correct ChromeDriver
+- For headless execution, uncomment the headless option in `selenium_layer.py`
+- Logs are saved in the `log/` directory with timestamps
