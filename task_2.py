@@ -27,7 +27,7 @@ log=util.config_logging( file_log, logging.DEBUG, True)
 
 
 
-def get_countr_info(url, code):
+def get_country_info(url, code):
     log.debug('Request to url ->'+ url)
     response = requests.get(url)
     if response.status_code == 200: 
@@ -63,7 +63,7 @@ def main():
     for item in COUNTRY:
         log.debug('Code country ->'+ item)
         url= API_URL+URL_CODE.replace('{code}',item)+'?access_key='+API_KEY
-        get_countr_info(url,item)
+        get_country_info(url, item)
     
     #Post country information 
     fake = Faker()

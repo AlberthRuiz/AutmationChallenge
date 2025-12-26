@@ -28,11 +28,11 @@ se = SeleniumLayer(log, dir_in, dir_path, dir_out)
 df = pd.read_excel(file_mockup, index_col=None)
 df.fillna('', inplace=True)
 
-def sing_in_usuario():
-    log.debug('Sing in')
+def sign_in_usuario():
+    log.debug('Sign in')
     se.click_visible_element_by_xpath("//*[contains(text(),'Sign in')]")
 
-def sing_out_usuario():
+def sign_out_usuario():
     log.debug('Sign out')
     se.click_visible_element_by_xpath("//*[contains(text(),'Sign out')]")
 
@@ -91,15 +91,15 @@ def registrar_nuevo_usuario(data):
 def main():
     se.iniciar_driver_chrome()
     se.navegar_url_chrome("http://automationpractice.com/")
-    sing_in_usuario()
+    sign_in_usuario()
     for id, fila in df.iterrows():
         try:
-            log.debug('Fill infomration '+ str(fila))
-            registrar_nuevo_usuario(fila)            
-            sing_out_usuario()
+            log.debug('Fill information ' + str(fila))
+            registrar_nuevo_usuario(fila)
+            sign_out_usuario()
             log.debug('OK')
         except Exception as e:
-            log.error(str(e) , exc_info=True)    
+            log.error(str(e), exc_info=True)
     se.quit_driver_chrome()
 
 

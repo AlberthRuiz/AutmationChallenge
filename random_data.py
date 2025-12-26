@@ -17,10 +17,9 @@ csv_columns = ['Title', 'First name', 'Last name', 'Email', 'Password',
 fake = Faker()
 country = fake.country()
 data=[]
-# United states
+# Generate test data (United States)
 for i in range(3):
-    os.F_OK
-    new_row = {'Title':fake.prefix(), 'First name': fake.first_name(), 'Last name': fake.last_name(), 'Email':fake.email(), 
+    new_row = {'Title': fake.prefix(), 'First name': fake.first_name(), 'Last name': fake.last_name(), 'Email': fake.email(), 
            'Password':"Passw@rd", 'Date of Birth': fake.date_of_birth(), 'Company': fake.company(), 'Address': fake.address(), 
            'Address (Line 2)': fake.street_address() ,'City': fake.city(), 'State':fake.state(),'Zip/Postal Code': fake.postcode(),
            'Country': 'United States', 'Additional information':fake.street_address(),
